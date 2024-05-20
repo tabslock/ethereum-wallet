@@ -1,1 +1,1 @@
-ethereum wallet generator with etherjs.
+ethereum wallet id and passkey generator with etherjs.
