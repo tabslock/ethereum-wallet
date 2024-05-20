@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Wallet Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .wallet-info {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ethereum Wallet Generator</h1>
+        <button id="generate-button" class="button" style="display: none;">Generate Wallet</button>
+        <div id="wallet-info" class="wallet-info" style="display: none;"></div>
+        <a href="/login.html" id="login-button" class="button" style="display: none;">Log In</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/check-login');
+                const result = await response.json();
+                if (!result.loggedIn) {
+                    document.getElementById('login-button').style.display = 'inline-block';
+                }
+
+                const generateButton = document.getElementById('generate-button');
+                generateButton.style.display = 'inline-block';
+
+                generateButton.addEventListener('click', async () => {
+                    try {
+                        const response = await fetch('/generate-wallet', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        const result = await response.json();
+                        const walletInfo = `Your new wallet address: ${result.address}\nPrivate Key: ${result.privateKey}`;
+                        document.getElementById('wallet-info').textContent = walletInfo;
+                        document.getElementById('wallet-info').style.display = 'block';
+                    } catch (error) {
+                        console.error('Error generating wallet:', error);
+                    }
+                });
+            } catch (error) {
+                console.error('Error checking login status:', error);
+            }
+        });
+    </script>
+</body>
+</html>
